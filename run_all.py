@@ -1,4 +1,3 @@
-
 """
 Landing on the Pixel Grid
 Unified Experiment Runner
@@ -17,7 +16,6 @@ import os
 import subprocess
 import sys
 import time
-
 from pathlib import Path
 
 
@@ -47,7 +45,6 @@ EXPERIMENTS = [
 # ==========================================
 
 def main():
-
     total_start = time.perf_counter()
 
     print("=" * 60)
@@ -55,7 +52,7 @@ def main():
     print("Unified Experiment Runner")
     print("=" * 60)
 
-    # Use the current Python environment
+    # Use the current Python environment.
     python_executable = sys.executable
 
     # Configure non-blocking Matplotlib output.
@@ -64,12 +61,11 @@ def main():
     environment["MPLBACKEND"] = "Agg"
 
     for index, (name, filename) in enumerate(EXPERIMENTS, start=1):
-
         script_path = PROJECT_DIR / filename
 
         if not script_path.is_file():
             print(f"\nERROR: Missing script: {filename}")
-            return
+            raise SystemExit(1)
 
         print(f"\n[{index}/{len(EXPERIMENTS)}] {name}")
         print(f"Running: {filename}")
@@ -82,14 +78,13 @@ def main():
                 [python_executable, str(script_path)],
                 cwd=PROJECT_DIR,
                 env=environment,
-                check=True
+                check=True,
             )
-
         except subprocess.CalledProcessError as error:
             print(f"\nFAILED: {filename}")
             print(f"Exit Code: {error.returncode}")
             print("Execution stopped.")
-            return
+            raise SystemExit(error.returncode)
 
         elapsed = time.perf_counter() - start
 
